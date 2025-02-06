@@ -13,7 +13,16 @@ export const APIKeyInput = () => {
   }, []);
 
   const handleSave = () => {
-    localStorage.setItem("azure_api_key", apiKey);
+    if (!apiKey.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid API key",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    localStorage.setItem("azure_api_key", apiKey.trim());
     toast({
       title: "API Key Saved",
       description: "Your API key has been saved securely in local storage.",
@@ -33,6 +42,9 @@ export const APIKeyInput = () => {
         />
         <Button onClick={handleSave} variant="outline">Save Key</Button>
       </div>
+      <p className="text-sm text-gray-500">
+        Enter your Azure API key to enable rule evaluation
+      </p>
     </div>
   );
 };

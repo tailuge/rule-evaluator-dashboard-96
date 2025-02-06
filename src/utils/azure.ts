@@ -5,8 +5,8 @@ const AZURE_ENDPOINT = "https://models.inference.ai.azure.com/chat/completions";
 
 export const evaluateRule = async (rule: Rule, subject: string): Promise<RuleResult> => {
   const apiKey = localStorage.getItem("azure_api_key");
-  if (!apiKey) {
-    throw new Error("API key not found");
+  if (!apiKey?.trim()) {
+    throw new Error("Please enter and save your Azure API key before evaluating rules");
   }
 
   const prompt = `
@@ -37,7 +37,7 @@ export const evaluateRule = async (rule: Rule, subject: string): Promise<RuleRes
       },
       {
         headers: {
-          "Authorization": `Bearer ${apiKey}`,
+          "Authorization": `Bearer ${apiKey.trim()}`,
           "Content-Type": "application/json"
         }
       }
@@ -53,8 +53,8 @@ export const evaluateRule = async (rule: Rule, subject: string): Promise<RuleRes
       status: status as "PASS" | "FAIL" | "NA",
       justification
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Azure API call failed:", error);
-    throw new Error("Failed to evaluate rule");
+    throw new Error(error.response?.data?.error?.message || "Failed to evaluate rule. Please check your API key and try again.");
   }
 };
