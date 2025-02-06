@@ -1,11 +1,22 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState, useEffect } from "react";
+import RuleBoard from "../components/RuleBoard";
+import { APIKeyInput } from "../components/APIKeyInput";
+import { SubjectInput } from "../components/SubjectInput";
 
 const Index = () => {
+  const [subject, setSubject] = useState("");
+  
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-7xl mx-auto space-y-6">
+        <h1 className="text-3xl font-semibold text-gray-900">Rule Evaluation Board</h1>
+        
+        <div className="bg-white rounded-lg shadow-sm p-6 space-y-6">
+          <APIKeyInput />
+          <SubjectInput value={subject} onChange={setSubject} />
+        </div>
+        
+        <RuleBoard subject={subject} />
       </div>
     </div>
   );
