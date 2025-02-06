@@ -30,7 +30,7 @@ export const evaluateRule = async (rule: Rule, subject: string): Promise<RuleRes
           { role: "system", content: "You are a helpful assistant that evaluates text against rules." },
           { role: "user", content: prompt }
         ],
-        model: "gpt-4o",
+        model: "gpt-4o-mini",
         temperature: 1,
         max_tokens: 4096,
         top_p: 1
