@@ -4,6 +4,7 @@ import { APIKeyInput } from "../components/APIKeyInput";
 import { SubjectInput } from "../components/SubjectInput";
 import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
+import AddRuleForm from "../components/AddRuleForm";
 import {
   Sheet,
   SheetContent,
@@ -26,12 +27,16 @@ const Index = () => {
                 <Settings className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent>
+            <SheetContent className="overflow-y-auto">
               <SheetHeader>
                 <SheetTitle>Settings</SheetTitle>
               </SheetHeader>
-              <div className="mt-6">
+              <div className="space-y-6 mt-6">
                 <APIKeyInput />
+                <div className="border-t pt-6">
+                  <AddRuleForm onAddRule={(rule) => window.dispatchEvent(new CustomEvent('addRule', { detail: rule }))} 
+                              onBulkImport={(rules) => window.dispatchEvent(new CustomEvent('bulkImportRules', { detail: rules }))} />
+                </div>
               </div>
             </SheetContent>
           </Sheet>

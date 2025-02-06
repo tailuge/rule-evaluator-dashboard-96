@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Rule, RuleResult } from "../types/rules";
 import RuleColumn from "./RuleColumn";
 import ResultsColumn from "./ResultsColumn";
-import AddRuleForm from "./AddRuleForm";
 import { evaluateRule } from "../utils/azure";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -21,21 +20,29 @@ const RuleBoard = ({ subject }: RuleBoardProps) => {
     if (storedRules) {
       setRules(JSON.parse(storedRules));
     }
-  }, []);
+
+    const handleAddRule = (event: CustomEvent<Rule>) => {
+      const newRules = [...rules, event.detail];
+      saveRules(newRules);
+    };
+
+    const handleBulkImport = (event: CustomEvent<Rule[]>) => {
+      saveRules(event.detail);
+      setResults([]); // Clear results when importing new rules
+    };
+
+    window.addEventListener('addRule', handleAddRule as EventListener);
+    window.addEventListener('bulkImportRules', handleBulkImport as EventListener);
+
+    return () => {
+      window.removeEventListener('addRule', handleAddRule as EventListener);
+      window.removeEventListener('bulkImportRules', handleBulkImport as EventListener);
+    };
+  }, [rules]);
 
   const saveRules = (newRules: Rule[]) => {
     localStorage.setItem("rules", JSON.stringify(newRules));
     setRules(newRules);
-  };
-
-  const handleAddRule = (rule: Rule) => {
-    const newRules = [...rules, rule];
-    saveRules(newRules);
-  };
-
-  const handleBulkImport = (importedRules: Rule[]) => {
-    saveRules(importedRules);
-    setResults([]); // Clear results when importing new rules
   };
 
   const handleEvaluate = async (rule: Rule) => {
@@ -64,9 +71,8 @@ const RuleBoard = ({ subject }: RuleBoardProps) => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <RuleColumn rules={rules} onEvaluate={handleEvaluate} isEvaluating={isEvaluating} />
-      <AddRuleForm onAddRule={handleAddRule} onBulkImport={handleBulkImport} />
       <ResultsColumn results={results} />
     </div>
   );
