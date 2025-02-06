@@ -33,6 +33,11 @@ const RuleBoard = ({ subject }: RuleBoardProps) => {
     saveRules(newRules);
   };
 
+  const handleBulkImport = (importedRules: Rule[]) => {
+    saveRules(importedRules);
+    setResults([]); // Clear results when importing new rules
+  };
+
   const handleEvaluate = async (rule: Rule) => {
     if (!subject.trim()) {
       toast({
@@ -61,7 +66,7 @@ const RuleBoard = ({ subject }: RuleBoardProps) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       <RuleColumn rules={rules} onEvaluate={handleEvaluate} isEvaluating={isEvaluating} />
-      <AddRuleForm onAddRule={handleAddRule} />
+      <AddRuleForm onAddRule={handleAddRule} onBulkImport={handleBulkImport} />
       <ResultsColumn results={results} />
     </div>
   );
