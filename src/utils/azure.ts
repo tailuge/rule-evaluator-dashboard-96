@@ -3,6 +3,8 @@ import { Rule, RuleResult } from "../types/rules";
 
 const AZURE_ENDPOINT = "https://models.inference.ai.azure.com/chat/completions";
 
+const SYSTEM_PROMPT = "You are an expert in financial regulations and mortgage applications. Given the following data representing a mortgage application and the provided rule, determine if the application complies with, fails, or does not apply to the rule. Provide a single sentence justification and a PASS/FAIL/NA outcome";
+
 export const evaluateRule = async (rule: Rule, subject: string): Promise<RuleResult> => {
   const apiKey = localStorage.getItem("azure_api_key");
   if (!apiKey?.trim()) {
@@ -27,10 +29,10 @@ export const evaluateRule = async (rule: Rule, subject: string): Promise<RuleRes
       AZURE_ENDPOINT,
       {
         messages: [
-          { role: "system", content: "You are a helpful assistant that evaluates text against rules." },
+          { role: "system", content: SYSTEM_PROMPT },
           { role: "user", content: prompt }
         ],
-        model: "gpt-4o-mini",
+        model: "gpt-4o",
         temperature: 1,
         max_tokens: 4096,
         top_p: 1
@@ -58,3 +60,6 @@ export const evaluateRule = async (rule: Rule, subject: string): Promise<RuleRes
     throw new Error(error.response?.data?.error?.message || "Failed to evaluate rule. Please check your API key and try again.");
   }
 };
+
+export const getCurrentModel = () => "gpt-4o";
+export const getCurrentPrompt = () => SYSTEM_PROMPT;
