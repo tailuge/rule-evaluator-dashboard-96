@@ -3,6 +3,7 @@
 ## Project info
 
 **URL**: https://lovable.dev/projects/1115f3b0-6bd1-4583-88d4-701e92e3f7d6
+**App**: https://rule-evaluator-dashboard-96.lovable.app/
 
 ## How can I edit this code?
 
