@@ -1,9 +1,12 @@
+
 import { useState, useEffect } from "react";
 import { Rule, RuleResult } from "../types/rules";
 import RuleColumn from "./RuleColumn";
 import ResultsColumn from "./ResultsColumn";
 import { evaluateRule } from "../utils/azure";
 import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
+import { PlayCircle } from "lucide-react";
 
 interface RuleBoardProps {
   subject: string;
@@ -70,10 +73,62 @@ const RuleBoard = ({ subject }: RuleBoardProps) => {
     setIsEvaluating(false);
   };
 
+  const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+  const handleEvaluateAll = async () => {
+    if (!subject.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter some subject matter to evaluate",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsEvaluating(true);
+    setResults([]); // Clear previous results
+
+    try {
+      for (const rule of rules) {
+        try {
+          const result = await evaluateRule(rule, subject);
+          setResults(prev => [...prev, result]);
+          await delay(10000); // Wait 10 seconds between evaluations
+        } catch (error: any) {
+          toast({
+            title: `Failed to evaluate rule: ${rule.title}`,
+            description: error.message,
+            variant: "destructive",
+          });
+          console.error("Evaluation failed:", error);
+          // Continue with next rule even if one fails
+        }
+      }
+    } finally {
+      setIsEvaluating(false);
+      toast({
+        title: "Evaluation Complete",
+        description: "All rules have been evaluated",
+      });
+    }
+  };
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <RuleColumn rules={rules} onEvaluate={handleEvaluate} isEvaluating={isEvaluating} />
-      <ResultsColumn results={results} />
+    <div className="space-y-4">
+      <div className="flex justify-end">
+        <Button
+          onClick={handleEvaluateAll}
+          disabled={isEvaluating || rules.length === 0}
+          className="flex items-center gap-2"
+        >
+          <PlayCircle className="h-4 w-4" />
+          Evaluate All Rules
+        </Button>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <RuleColumn rules={rules} onEvaluate={handleEvaluate} isEvaluating={isEvaluating} />
+        <ResultsColumn results={results} />
+      </div>
     </div>
   );
 };
