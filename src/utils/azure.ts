@@ -15,7 +15,7 @@ export const evaluateRule = async (rule: Rule, subject: string): Promise<RuleRes
     throw new Error("Please enter and save your Azure API key before evaluating rules");
   }
 
-  const promtp = `
+  const prompt = `
   Evaluate the following mortgage application against the provided rule. Use the outcomes below:
 
 - **PASS**: if the application fully complies with the rule.
@@ -40,6 +40,8 @@ Mortgage Application Data:
 ${subject}
 `;
 
+  console.log("Raw prompt:", prompt);
+
   try {
     const response = await axios.post(
       AZURE_ENDPOINT,
@@ -60,6 +62,8 @@ ${subject}
         }
       }
     );
+
+    console.log("Raw response:", response.data);
 
     const content = response.data.choices[0].message.content;
     const [statusPart, justificationPart] = content.split(" | ");
