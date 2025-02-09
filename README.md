@@ -3,7 +3,23 @@
 ## Project info
 
 **URL**: https://lovable.dev/projects/1115f3b0-6bd1-4583-88d4-701e92e3f7d6
+
 **App**: https://rule-evaluator-dashboard-96.lovable.app/
+
+<a href="https://idx.google.com/import?url=https%3A%2F%2Fgithub.com%2Ftailuge%2Frule-evaluator-dashboard-96">
+  <picture>
+    <source
+      media="(prefers-color-scheme: dark)"
+      srcset="https://cdn.idx.dev/btn/open_dark_32.svg">
+    <source
+      media="(prefers-color-scheme: light)"
+      srcset="https://cdn.idx.dev/btn/open_light_32.svg">
+    <img
+      height="32"
+      alt="Open in IDX"
+      src="https://cdn.idx.dev/btn/open_purple_32.svg">
+  </picture>
+</a>
 
 ## How can I edit this code?
 

@@ -3,7 +3,11 @@ import { Rule, RuleResult } from "../types/rules";
 
 const AZURE_ENDPOINT = "https://models.inference.ai.azure.com/chat/completions";
 
-const SYSTEM_PROMPT = "You are an expert in financial regulations and mortgage applications. Given the following data representing a mortgage application and the provided rule, determine if the application complies with, fails, or does not apply to the rule. Provide a single sentence justification and a PASS/FAIL/NA outcome";
+const SYSTEM_PROMPT = `You are an expert in financial regulations and mortgage applications. 
+Work from the perspective of the lender deciding if an application is a suitable risk profile for the company.
+Given a mortgage application (provided as JSON) and a specific rule,
+determine if the application complies with the rule, fails to comply, or if the rule is not applicable.
+`;
 
 export const evaluateRule = async (rule: Rule, subject: string): Promise<RuleResult> => {
   const apiKey = localStorage.getItem("azure_api_key");
@@ -11,18 +15,30 @@ export const evaluateRule = async (rule: Rule, subject: string): Promise<RuleRes
     throw new Error("Please enter and save your Azure API key before evaluating rules");
   }
 
-  const prompt = `
-    Please evaluate the following subject matter against the given rule.
-    Respond with either PASS, FAIL, or NA, followed by a brief justification.
-    
-    Rule: ${rule.title}
-    Rule Details: ${rule.details}
-    
-    Subject Matter:
-    ${subject}
-    
-    Format your response exactly as: STATUS: [PASS/FAIL/NA] | JUSTIFICATION: [Your brief explanation]
-  `;
+  const promtp = `
+  Evaluate the following mortgage application against the provided rule. Use the outcomes below:
+
+- **PASS**: if the application fully complies with the rule.
+- **FAIL**: if the application does not comply with the rule.
+- **NA**: if the rule does not apply to the application.
+- **INSUFFICIENT DATA**: if the rule applies but essential information is missing to make a definitive determination.
+
+Provide a single sentence justification for your decision. Format your response exactly as:
+
+STATUS: [PASS/FAIL/NA/INSUFFICIENT DATA] | JUSTIFICATION: [Your brief explanation]
+
+---
+
+Rule Title:
+${rule.title}
+
+Rule Definition: 
+${rule.details}
+
+
+Mortgage Application Data:
+${subject}
+`;
 
   try {
     const response = await axios.post(
