@@ -1,3 +1,4 @@
+
 import { Rule } from "../types/rules";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -6,16 +7,17 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 interface RuleColumnProps {
   rules: Rule[];
   onEvaluate: (rule: Rule) => void;
+  onDelete: (ruleId: string) => void;
   isEvaluating: boolean;
 }
 
-const RuleColumn = ({ rules, onEvaluate, isEvaluating }: RuleColumnProps) => {
+const RuleColumn = ({ rules, onEvaluate, onDelete, isEvaluating }: RuleColumnProps) => {
   const [openItems, setOpenItems] = useState<string[]>([]);
 
   const toggleItem = (id: string) => {
@@ -45,15 +47,25 @@ const RuleColumn = ({ rules, onEvaluate, isEvaluating }: RuleColumnProps) => {
                   )}
                   <h3 className="font-medium text-gray-900">{rule.title}</h3>
                 </CollapsibleTrigger>
-                <Button
-                  onClick={() => onEvaluate(rule)}
-                  disabled={isEvaluating}
-                  variant="outline"
-                  className="bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
-                  size="sm"
-                >
-                  {isEvaluating ? "Evaluating..." : "Evaluate"}
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    onClick={() => onEvaluate(rule)}
+                    disabled={isEvaluating}
+                    variant="outline"
+                    className="bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
+                    size="sm"
+                  >
+                    {isEvaluating ? "Evaluating..." : "Evaluate"}
+                  </Button>
+                  <Button
+                    onClick={() => onDelete(rule.id)}
+                    variant="outline"
+                    size="sm"
+                    className="bg-red-50 hover:bg-red-100 text-red-700 border-red-200"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
               <CollapsibleContent className="pt-2">
                 <p className="text-sm text-gray-600 pl-6">{rule.details}</p>

@@ -73,6 +73,16 @@ const RuleBoard = ({ subject }: RuleBoardProps) => {
     setIsEvaluating(false);
   };
 
+  const handleDeleteRule = (ruleId: string) => {
+    const newRules = rules.filter(rule => rule.id !== ruleId);
+    saveRules(newRules);
+    setResults(results.filter(result => result.rule.id !== ruleId));
+    toast({
+      title: "Rule Deleted",
+      description: "The rule has been removed successfully",
+    });
+  };
+
   const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
   const handleEvaluateAll = async () => {
@@ -126,7 +136,12 @@ const RuleBoard = ({ subject }: RuleBoardProps) => {
         </Button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <RuleColumn rules={rules} onEvaluate={handleEvaluate} isEvaluating={isEvaluating} />
+        <RuleColumn 
+          rules={rules} 
+          onEvaluate={handleEvaluate} 
+          onDelete={handleDeleteRule}
+          isEvaluating={isEvaluating} 
+        />
         <ResultsColumn results={results} />
       </div>
     </div>
