@@ -1,3 +1,4 @@
+
 import { RuleResult } from "../types/rules";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -14,7 +15,7 @@ const ResultsColumn = ({ results }: ResultsColumnProps) => {
       case "FAIL":
         return "bg-red-50 border-red-200 text-red-700";
       case "NA":
-        return "bg-gray-50 border-gray-200 text-gray-700";
+        return "bg-yellow-50 border-yellow-200 text-yellow-700";
       default:
         return "bg-gray-50 border-gray-200 text-gray-700";
     }

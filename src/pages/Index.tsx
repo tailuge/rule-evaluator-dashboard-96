@@ -1,11 +1,14 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import RuleBoard from "../components/RuleBoard";
 import { APIKeyInput } from "../components/APIKeyInput";
 import { SubjectInput } from "../components/SubjectInput";
 import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
 import AddRuleForm from "../components/AddRuleForm";
-import { getCurrentModel, getCurrentPrompt } from "../utils/azure";
+import { getCurrentModel, getCurrentPrompt, setSystemPrompt } from "../utils/azure";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
 import {
   Sheet,
   SheetContent,
@@ -16,7 +19,17 @@ import {
 
 const Index = () => {
   const [subject, setSubject] = useState("");
+  const [prompt, setPrompt] = useState(getCurrentPrompt());
+  const { toast } = useToast();
   
+  const handleSavePrompt = () => {
+    setSystemPrompt(prompt);
+    toast({
+      title: "Prompt Saved",
+      description: "Your system prompt has been updated successfully.",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -39,9 +52,17 @@ const Index = () => {
                     <h3 className="text-sm font-medium text-gray-900 mb-1">Current Model</h3>
                     <p className="text-sm text-gray-600">{getCurrentModel()}</p>
                   </div>
-                  <div>
-                    <h3 className="text-sm font-medium text-gray-900 mb-1">System Prompt</h3>
-                    <p className="text-sm text-gray-600 whitespace-pre-wrap">{getCurrentPrompt()}</p>
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-medium text-gray-900">System Prompt</h3>
+                    <Textarea
+                      value={prompt}
+                      onChange={(e) => setPrompt(e.target.value)}
+                      className="min-h-[100px]"
+                      placeholder="Enter your system prompt..."
+                    />
+                    <Button onClick={handleSavePrompt} variant="outline" className="w-full">
+                      Save Prompt
+                    </Button>
                   </div>
                 </div>
                 <div className="border-t pt-6">
