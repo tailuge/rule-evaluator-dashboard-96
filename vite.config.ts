@@ -5,7 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: "./", // Ensures assets are loaded relative to the current directory
+  base: mode === "development" ? "./" : "/rule-evaluator-dashboard-96/", // Ensure correct base path
   server: {
     host: "::",
     port: 8080,
